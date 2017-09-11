@@ -1,4 +1,4 @@
-# @copyright &copy; 2010 - 2016, Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. All rights reserved.
+# @copyright &copy; 2010 - 2017, Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. All rights reserved.
 #
 # BSD 3-Clause License
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -16,21 +16,24 @@
 #
 # &Prime;This product is derived from foxBMS&reg;&Prime;
 
-'''
-@file       ChkSum.py
+"""
+@file       chksum.py
 @date       02.09.2015 (date of creation)
 @author     foxBMS Team
 @ingroup    tools
 @prefix     none
 @brief      Checksum tool
 
-This script will be invoked in a post-build step to generate either a STM32 compatible CRC32
-checksum or a simple Modulo32BitAddition of the provided binary.
-For this purpose the generated .hex file will be loaded from disc and its content is being parsed.
-In the next step a buffer file will be created, initialized with 0xFF to match the pattern during
-flashand parsed content from the hex file is stored into this filebuffer. Each line gets its own
-line-chksum and desired chksum type is calculated and written into a headerfile in the final step.
-'''
+This script will be invoked in a post-build step to generate either a STM32
+compatible CRC32 checksum or a simple Modulo32BitAddition of the provided
+binary. For this purpose the generated .hex file will be loaded from disc and
+its content is being parsed. In the next step a buffer file will be created,
+initialized with 0xFF to match the pattern during flashand parsed content from
+the hex file is stored into this file buffer. Each line gets its own line
+checksum and desired checksum type is calculated and written into a header file
+in the final step.
+"""
+
 import time
 import sys
 import os
@@ -40,6 +43,7 @@ import struct
 import argparse
 import cStringIO
 import bitstring
+
 STARTS = '************************************************************************'
 STARTS_LEN = len(STARTS)
 
@@ -122,8 +126,6 @@ class IniFile(object):
         if err_bit:
             sys.exit()
         return gkey
-
-
 
 
 if __name__ == '__main__':
@@ -284,7 +286,6 @@ if __name__ == '__main__':
 
             chksum_pack_temp = struct.pack('>L', final_data_chksum)
             final_data_chksum_written = struct.unpack('<L', chksum_pack_temp)
-            
 
             p_src_file.seek(dst_pos_final_chksum)
             p_src_file.write('%08X' % final_data_chksum_written)  # write chcksum
@@ -295,7 +296,7 @@ if __name__ == '__main__':
 
             # re-calc new line checksum for changed line and overwrite the new data checksum
             idx = (chksum_cfg.chksum_address & 0x0000ffff) - src_line_address_cpy_temp
-            
+
             src_line_data_cpy[idx:idx+4] = struct.unpack('>BBBB', chksum_pack_temp)
 
             for i in range(src_line_data_length_cpy):
